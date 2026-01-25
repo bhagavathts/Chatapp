@@ -41,7 +41,7 @@ export default function UserSearch({ onSelectFriend, onBack }) {
 
     setLoading(true);
     axios
-      .get(`http://localhost:5000/users/search?q=${searchQuery}`, {
+      .get(`https://chatapp-fkvw.onrender.com/users/search?q=${searchQuery}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -54,7 +54,7 @@ export default function UserSearch({ onSelectFriend, onBack }) {
         for (const user of res.data) {
           try {
             const statusRes = await axios.get(
-              `http://localhost:5000/friends/status/${user._id}`,
+              `https://chatapp-fkvw.onrender.com/friends/status/${user._id}`,
               {
                 headers: {
                   Authorization: `Bearer ${token}`,
@@ -80,7 +80,7 @@ export default function UserSearch({ onSelectFriend, onBack }) {
   const sendRequest = async (id) => {
     try {
       await axios.post(
-        `http://localhost:5000/friends/request/${id}`,
+        `https://chatapp-fkvw.onrender.com/friends/request/${id}`,
         {},
         {
           headers: {
@@ -107,7 +107,7 @@ export default function UserSearch({ onSelectFriend, onBack }) {
     try {
       // First find the friend request ID
       const requestsRes = await axios.get(
-        "http://localhost:5000/friends/requests",
+        "https://chatapp-fkvw.onrender.com/friends/requests",
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -121,7 +121,7 @@ export default function UserSearch({ onSelectFriend, onBack }) {
 
       if (friendRequest) {
         await axios.post(
-          `http://localhost:5000/friends/accept/${friendRequest._id}`,
+          `https://chatapp-fkvw.onrender.com/friends/accept/${friendRequest._id}`,
           {},
           {
             headers: {

@@ -12,7 +12,7 @@ export function NotificationProvider({ children }) {
   const fetchCounts = async () => {
     try {
       const res = await axios.get(
-        "http://localhost:5000/notifications/counts",
+        "https://chatapp-fkvw.onrender.com/notifications/counts",
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`

@@ -21,7 +21,7 @@ export default function FriendsList({ onSelect }) {
 
   useEffect(() => {
     axios
-      .get("http://localhost:5000/friends/list", {
+      .get("https://chatapp-fkvw.onrender.com/friends/list", {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },

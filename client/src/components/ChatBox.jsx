@@ -235,7 +235,7 @@ export default function ChatBox({ activeFriendId, activeFriendName }) {
     if (!activeFriendId) return;
 
     axios
-      .get(`http://localhost:5000/users/public-key/${activeFriendId}`, {
+      .get(`https://chatapp-fkvw.onrender.com/users/public-key/${activeFriendId}`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
@@ -254,7 +254,7 @@ export default function ChatBox({ activeFriendId, activeFriendName }) {
     if (!activeFriendId || !privateKey) return;
 
     axios
-      .get(`http://localhost:5000/messages/${activeFriendId}`, {
+      .get(`https://chatapp-fkvw.onrender.com/messages/${activeFriendId}`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },

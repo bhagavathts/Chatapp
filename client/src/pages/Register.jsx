@@ -67,7 +67,7 @@ export default function Register() {
       const { publicKey, privateKey } = await generateKeyPair();
 
       const res = await axios.post(
-        "http://localhost:5000/auth/register",
+        "https://chatapp-fkvw.onrender.com/auth/register",
         {
           name,
           email,

@@ -26,7 +26,7 @@ export default function FriendRequests() {
 
   useEffect(() => {
     axios
-      .get("http://localhost:5000/friends/requests", {
+      .get("https://chatapp-fkvw.onrender.com/friends/requests", {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
@@ -44,7 +44,7 @@ export default function FriendRequests() {
   const accept = async (id) => {
     try {
       await axios.post(
-        `http://localhost:5000/friends/accept/${id}`,
+        `https://chatapp-fkvw.onrender.com/friends/accept/${id}`,
         {},
         {
           headers: {
@@ -61,7 +61,7 @@ export default function FriendRequests() {
   const reject = async (id) => {
     try {
       await axios.post(
-        `http://localhost:5000/friends/reject/${id}`,
+        `https://chatapp-fkvw.onrender.com/friends/reject/${id}`,
         {},
         {
           headers: {

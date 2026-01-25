@@ -32,7 +32,7 @@ export default function Login() {
       setLoading(true);
 
       const res = await axios.post(
-        "http://localhost:5000/auth/login",
+        "https://chatapp-fkvw.onrender.com/auth/login",
         { email, password },
         { headers: { "Content-Type": "application/json" } }
       );
@@ -40,7 +40,7 @@ export default function Login() {
       const data = res.data;
 
       const keysRes = await axios.get(
-        "http://localhost:5000/users/my-keys",
+        "https://chatapp-fkvw.onrender.com/users/my-keys",
         {
           headers: {
             Authorization: `Bearer ${data.token}`,
