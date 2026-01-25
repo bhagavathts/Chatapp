@@ -11,8 +11,28 @@ router.post("/request/:id", authMiddleware, async (req, res) => {
     const targetUserId = req.params.id;
     const currentUserId = req.user.id;
 
-    // Check if already friends
+    // Check if target user exists
+    const targetUser = await User.findById(targetUserId);
+    if (!targetUser) {
+      return res.status(404).json({ msg: "User not found" });
+    }
+
+    // Check if current user exists
     const currentUser = await User.findById(currentUserId);
+    if (!currentUser) {
+      return res.status(404).json({ msg: "Current user not found" });
+    }
+
+    // Initialize arrays if they don't exist
+    if (!currentUser.friends) currentUser.friends = [];
+    if (!currentUser.sentRequests) currentUser.sentRequests = [];
+    if (!currentUser.receivedRequests) currentUser.receivedRequests = [];
+
+    if (!targetUser.friends) targetUser.friends = [];
+    if (!targetUser.sentRequests) targetUser.sentRequests = [];
+    if (!targetUser.receivedRequests) targetUser.receivedRequests = [];
+
+    // Check if already friends
     if (currentUser.friends.includes(targetUserId)) {
       return res.status(400).json({ msg: "Already friends" });
     }
@@ -56,6 +76,20 @@ router.post("/accept/:id", authMiddleware, async (req, res) => {
     if (!fr) {
       return res.status(404).json({ msg: "Friend request not found" });
     }
+
+    // Check if both users exist
+    const fromUser = await User.findById(fr.from);
+    const toUser = await User.findById(fr.to);
+    
+    if (!fromUser || !toUser) {
+      return res.status(404).json({ msg: "User not found" });
+    }
+
+    // Initialize arrays if they don't exist
+    if (!fromUser.friends) fromUser.friends = [];
+    if (!fromUser.sentRequests) fromUser.sentRequests = [];
+    if (!toUser.friends) toUser.friends = [];
+    if (!toUser.receivedRequests) toUser.receivedRequests = [];
 
     // Add to friends list
     await User.findByIdAndUpdate(fr.from, { 
@@ -118,6 +152,17 @@ router.get("/requests", authMiddleware, async (req, res) => {
 router.get("/list", authMiddleware, async (req, res) => {
   try {
     const user = await User.findById(req.user.id).populate("friends", "name");
+    
+    if (!user) {
+      return res.status(404).json({ msg: "User not found" });
+    }
+
+    // Ensure friends array exists
+    if (!user.friends) {
+      user.friends = [];
+      await user.save();
+    }
+
     res.json(user.friends);
   } catch (error) {
     console.error("Error fetching friends list:", error);
@@ -132,6 +177,22 @@ router.get("/status/:userId", authMiddleware, async (req, res) => {
     const targetUserId = req.params.userId;
 
     const currentUser = await User.findById(currentUserId);
+    
+    // Check if current user exists
+    if (!currentUser) {
+      return res.status(404).json({ msg: "Current user not found" });
+    }
+
+    // Check if target user exists
+    const targetUser = await User.findById(targetUserId);
+    if (!targetUser) {
+      return res.status(404).json({ msg: "User not found" });
+    }
+
+    // Initialize arrays if they don't exist
+    if (!currentUser.friends) currentUser.friends = [];
+    if (!currentUser.sentRequests) currentUser.sentRequests = [];
+    if (!currentUser.receivedRequests) currentUser.receivedRequests = [];
 
     // Check if already friends
     if (currentUser.friends.includes(targetUserId)) {
@@ -153,6 +214,35 @@ router.get("/status/:userId", authMiddleware, async (req, res) => {
   } catch (error) {
     console.error("Error checking friendship status:", error);
     res.status(500).json({ error: "Failed to check friendship status" });
+  }
+});
+
+// Remove friend
+router.delete("/remove/:friendId", authMiddleware, async (req, res) => {
+  try {
+    const friendId = req.params.friendId;
+    const currentUserId = req.user.id;
+
+    // Check if users exist
+    const currentUser = await User.findById(currentUserId);
+    const friendUser = await User.findById(friendId);
+    
+    if (!currentUser || !friendUser) {
+      return res.status(404).json({ msg: "User not found" });
+    }
+
+    // Remove from both users' friends lists
+    await User.findByIdAndUpdate(currentUserId, {
+      $pull: { friends: friendId }
+    });
+    await User.findByIdAndUpdate(friendId, {
+      $pull: { friends: currentUserId }
+    });
+
+    res.sendStatus(200);
+  } catch (error) {
+    console.error("Error removing friend:", error);
+    res.status(500).json({ error: "Failed to remove friend" });
   }
 });
 
